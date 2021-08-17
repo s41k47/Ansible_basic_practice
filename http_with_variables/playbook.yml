@@ -1,0 +1,61 @@
+---
+- name: httpd deployment on CentOS7
+  hosts: host2.example.core
+  gather_facts: False
+  tasks:
+    - name: Install {{ http_package }}
+      yum:
+          name: "{{ http_package }}"
+          state: present
+
+    - name: Copy web content {{ host_name }}
+      copy:
+        content: "\n{{ welcome_text }}\n\n"
+        dest: /var/www/html/index.html
+    
+    - name: Enable and start {{ web_service }}
+      service:
+        name: "{{ web_service }}"
+        state: started
+        enabled: true
+
+    - name: Enable and start {{ firewall_service }}, if not started
+      service:
+        name: "{{ firewall_service }}"
+        state: started
+        enabled: True
+
+    - name: Add port {{ http_port }} to the firewall
+      firewalld:
+        port: "{{ http_port }}/tcp"
+        immediate: true
+        permanent: true
+        state: enabled
+
+
+- name: httpd deployment on Ubuntu20.04
+  hosts: host4.example.core
+  tasks:
+    - name: Install {{ http_package }}
+      apt:
+        name: "{{ http_package }}"
+        state: present
+
+    - name: Copy web content {{ host_name }}
+      copy:
+        content: "\n{{ welcome_text }}\n\n"
+        dest: /var/www/html/index.html
+
+    - name: Enable and start {{ web_service }}
+      service:
+        name: "{{ web_service }}"
+        state: started
+        enabled: true
+
+    - name: Add port {{ http_port }} to the firewall
+      ufw:
+        rule: allow
+        port: '"{{ http_port }}"'
+        proto: tcp
+        state: enabled
+... 
