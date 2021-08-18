@@ -12,7 +12,7 @@
       copy:
         content: "\n{{ welcome_text }}\n\n"
         dest: /var/www/html/index.html
-    
+
     - name: Enable and start {{ web_service }}
       service:
         name: "{{ web_service }}"
