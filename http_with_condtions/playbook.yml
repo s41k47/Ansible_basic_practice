@@ -1,0 +1,46 @@
+---
+- name: httpd deployment on CentOS7
+  hosts: webservers
+  tasks:
+    - name: Install {{ http_package }}
+      yum:
+        name: "{{ http_package }}"
+        state: present
+
+      when: ansible_facts['distribution'] == "CentOS"
+
+    - name: Install {{ http_package }}
+      apt:
+        name: "{{ http_package }}"
+        state: present
+      when: ansible_facts['distribution'] == "Ubuntu"
+
+    - name: Copy web content {{ host_name }}
+      copy:
+        content: "\n{{ welcome_text }}\n\n"
+        dest: /var/www/html/index.html
+
+    - name: Enable and start {{ web_service }}
+      service:
+        name: "{{ web_service }}"
+        state: started
+        enabled: true
+
+    - name: Add port {{ http_port }} to the firewall
+      firewalld:
+        port: "{{ http_port }}/tcp"
+        immediate: true
+        permanent: true
+        state: enabled
+
+      when: ansible_facts['distribution'] == "CentOS"
+
+    - name: Add port {{ http_port }} to the firewall
+      ufw:
+        rule: allow
+        port: '"{{ http_port }}"'
+        proto: tcp
+        state: enabled
+
+      when: ansible_facts['distribution'] == "Ubuntu"
+... 

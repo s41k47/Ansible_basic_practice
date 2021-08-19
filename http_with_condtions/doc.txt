@@ -1,0 +1,25 @@
+# DEPLOYING HTTP SERVER ON CentOS7 and ubuntu20.04 #
+
+PLAYBOOK OVERVIEW:
+
+* 2 managed hosts
+
+* Variables are declared according to the red hat recommendation
+.
+* 2 plays ha been organized into a single play using conditional statement based on the distribution running on the managed hosts.
+
+TASKS:
+
+1. Package installation ( on CentOS7 --->>  httpd, on ubuntu20.04 --->> apache2 )
+
+      when distribution --->>> CentOS, then yum module will run.
+      when distribution --->>> Ubuntu, then apt module will run.
+	
+2. Deploying index.html file
+
+3. Enabling and starting daemons
+
+4. Adding ports/services to the firewall ( on CentOS --->> firewalld, on ubuntu20.04 ---> ufw )
+
+        when distribution --->>> CentOS, then firewalld module will run.
+        when distribution --->>> Ubuntu, then ufw module will run.
