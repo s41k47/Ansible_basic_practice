@@ -1,6 +1,5 @@
 http_package: httpd
 web_service: httpd
-firewall_service: firewalld
 http_port: 80
 host_name: host2.example.core
 welcome_text: WELCOME TO CentOS7 !!!
