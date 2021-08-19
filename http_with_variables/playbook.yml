@@ -19,12 +19,6 @@
         state: started
         enabled: true
 
-    - name: Enable and start {{ firewall_service }}, if not started
-      service:
-        name: "{{ firewall_service }}"
-        state: started
-        enabled: True
-
     - name: Add port {{ http_port }} to the firewall
       firewalld:
         port: "{{ http_port }}/tcp"
