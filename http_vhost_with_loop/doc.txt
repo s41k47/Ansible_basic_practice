@@ -1,0 +1,20 @@
+# DEPLOYING A SIMPLE HTTP VIRTUALHOST ON ROCKY LINUX 8.4 #
+
+PLAYBOOK OVERVIEW:
+
+* 1 host group --->>> webserver
+
+* Variables are declared according to the red hat recommendation
+
+TASKS:
+
+1. Package installation ( httpd )
+
+2. copy and file modules contain loop.
+
+3. file module contain a simple loop over a list ( doc_root )
+
+4. We could use copy module only once by looping over a large list    of hashes. But for better understanding we divided that by 2
+   ( config_files and index_files ) 
+	
+5. Simply enabled and started daemon and added port to the firewall

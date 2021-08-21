@@ -1,0 +1,20 @@
+web_pkg: httpd
+web_srv: httpd
+http_port: 80
+
+config_files:
+  - { source: httpd.conf, destination: /etc/httpd/conf/ }
+  - { source: welcome.conf, destination: /etc/httpd/conf.d/ }
+  - { source: vhosts.conf, destination: /etc/httpd/conf.d/ }
+
+doc_root:
+  - blackhole.core
+  - wormhole.core
+  - supernova.core
+  - bluegiant.core
+
+index_files:
+  - { source: blackhole, destination: blackhole.core }
+  - { source: wormhole, destination: wormhole.core }
+  - { source: supernova, destination: supernova.core }
+  - { source: bluegiant, destination: bluegiant.core }

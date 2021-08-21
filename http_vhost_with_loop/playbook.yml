@@ -1,0 +1,41 @@
+---
+- name: http virtualhost deployment
+  hosts: webserver
+  gather_facts: False
+  tasks:
+    - name: Install {{ web_pkg }}
+      dnf:
+        name: "{{ web_pkg }}"
+        state: present
+
+    - name: Deploy configuration files
+      copy:
+        src: "files/{{ item['source'] }}"
+        dest: "{{ item['destination'] }}"
+      loop: "{{ config_files }}"
+
+    - name: Create document root directories
+      file:
+        state: directory
+        path: "/var/www/{{ item }}"
+      loop: "{{ doc_root }}"
+
+    - name: Deploy index files
+      copy:
+        src: "files/{{ item['source'] }}"
+        dest: "/var/www/{{ item['destination'] }}/index.html"
+      loop: "{{index_files}}"
+
+    - name: Start {{ web_srv }}
+      service:
+        name: "{{ web_srv }}"
+        state: started
+        enabled: True
+            
+    - name: Add port to the firewall
+      firewalld:
+        port: "{{ http_port }}/tcp"
+        state: enabled
+        immediate: True
+        permanent: True
+...
