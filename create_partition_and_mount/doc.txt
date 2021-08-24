@@ -1,0 +1,18 @@
+# CERATE PARTITION AND MOUNT THE FILESYSTEM #
+
+PLAYBOOK OVERVIEW:
+
+* 1 host group --->>> Application
+
+* Variables are declared according to the red hat recommendation. UUID has been collected from ansible_facts variable.
+
+* 2 plays --->>> as we need to collect UUID information after creating the filesystem.
+
+TASKS:
+
+1. Create a partition of GPT disklabel, size 2 GiB 
+
+2. Format the filesystem in xfs
+
+3. Mount the filesystem persistently by it's UUID.
+	( Note: If the mount point defined in path attribute doesn't exist, it will be created )

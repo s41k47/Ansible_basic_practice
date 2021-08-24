@@ -1,0 +1,4 @@
+dev_path: /dev/sdb
+fs_type: xfs
+partition: /dev/sdb1
+mount_point: /NewHome

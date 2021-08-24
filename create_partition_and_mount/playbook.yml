@@ -1,0 +1,28 @@
+---
+- name: Create partition and filesystem
+  hosts: Application
+  gather_facts: False
+  tasks:
+    - name: Create partition
+      parted:
+        device: "{{ dev_path }}"
+        label: gpt
+        number: 1
+        part_end: 2GiB
+        state: present
+
+    - name: Create filesystem
+      filesystem:
+        fstype: "{{ fs_type }}"
+        dev: "{{ partition }}"
+
+- name: Mount the filesystem
+  hosts: Application
+  tasks:
+    - name: Mount now
+      mount:
+        path: "{{ mount_point }}"
+        state: mounted
+        fstype: "{{ fs_type }}"
+        src: UUID={{ ansible_facts['devices']['sdb']['partitions']['sdb1']['uuid'] }}
+...
