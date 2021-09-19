@@ -1,0 +1,13 @@
+# Group variable file
+
+http_package: httpd
+doc_root: /srv/my_web
+f_setype: httpd_sys_content_t
+p_setype: http_port_t
+
+conf_path: /etc/httpd/conf/httpd.conf
+
+lines:
+  - { rgxs: '^Listen 80', set_string: Listen 8010 }
+  - { rgxs: '^DocumentRoot', set_string: DocumentRoot /srv/my_web }
+  - { rgxs: '^<Directory "/var/www/html">', set_string: <Directory "/srv/my_web"> }

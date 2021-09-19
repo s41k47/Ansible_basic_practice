@@ -1,0 +1,55 @@
+---
+  - name: Deploy http with custom configuration
+    hosts: MHosts
+    tasks:
+      - name: Install {{ http_package }} package if not installed
+        dnf:
+          name: "{{ http_package }}"
+          state: present
+
+      - name: Create DocumentRoot Directory
+        file:
+          path: "{{ doc_root }}"
+          state: directory
+
+      - name: Write welcome text
+        copy:
+          content: "\nWELCOME TO {{ ansible_facts['nodename'] }}\n\n"
+          dest: "{{ doc_root }}/index.html"
+
+      - name: Manage SETypes if SELinux enabled
+        block:
+          - name: Set SEType to the DocumentRoot
+            sefcontext:
+              target: "{{ doc_root }}(/.*)?"
+              setype: "{{ f_setype }}"
+              state: present
+
+          - name: Apply new SELinux file context to filesystem
+            shell: 'restorecon -Rv {{ doc_root }}'
+
+          - name: Set SEType to the Listening port
+            seport:
+              ports: 8010
+              proto: tcp
+              setype: "{{ p_setype }}"
+              state: present
+            notify: Restart httpd service
+        when: ansible_facts['selinux']['status'] == "enabled"
+
+      - name: Deploy configuration files
+        lineinfile:
+          path: "{{ conf_path }}"
+          regexp: "{{ item['rgxs'] }}"
+          line: "{{ item['set_string'] }}"
+          backrefs: True
+        loop: "{{ lines }}"
+        notify: Restart httpd service
+
+    handlers:
+      - name: Restart httpd service
+        service:
+          name: httpd
+          state: restarted
+          enabled : True
+...
